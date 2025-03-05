@@ -1,37 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-          crossorigin="anonymous"
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="./style.css">
-   <script src="./script.js" defer></script>
-    <title>Market App</title>
-</head>
-<body>
-<div>
-    <label for="productName">Название товара:</label>
-    <input type="text" placeholder="Enter product name ..." id="productName"/>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js" defer></script>
+    <title>Магазин продуктов</title>
+  </head>
+  <body>
+    <h1 class="text-center text-warning">Магазин продуктов</h1>
+    <div class="w-75 mx-auto align-content-center mb-3">
 
-    <label for="productPrice">Цена:</label>
-    <input type="number" placeholder="Enter product price ..." id="productPrice"/>
+      <div class="input-group mb-3">
+        <label class="input-group-text" for="productName">
+            Название товара:</label>
+        <input
+          type="text"
+          id="productName"
+          class="form-control"
+          placeholder="Enter product name ..."
+        />
+      </div>
 
-    <label for="productQuantity">Количество, шт.:</label>
-    <input type="number" placeholder="Enter product quantity ..." id="productQuantity"/>
+      <div class="input-group mb-3">
+        <label class="input-group-text"  for="productPrice">Цена:</label>
+      <input
+        type="number"
+        id="productPrice"
+        class="form-control"
+        placeholder="Enter product price ..."
+      />
 
-    <div>
-        <button id="addBtn">Add product</button>
-        <button id="statBtn">Show stats</button>
+      <label class="input-group-text ms-2" for="productQuantity">Количество, шт.:</label>
+      <input
+        type="number"
+        id="productQuantity"
+        class="form-control"
+        placeholder="Enter product quantity ..."
+      />
     </div>
 
-</div>
-<ol id="productsList">
-</ol>
-<ol id="statsList">
-</ol>
-</body>
+      <div class="d-flex py-3 align-content-center">
+        <button id="addBtn">Добавить продукт</button>
+        <button id="statBtn">Статистика</button>
+      </div>
+    </div>
+    <h3 class="text-center text-warning">Список продуктов</h3>
+    <ol id="productsList"></ol>
+    <h3 id="headerStat" class="text-center text-warning" style="display: none">Статистика продуктов</h3>
+    <ol id="statsList"></ol>
+  </body>
 </html>

@@ -21,10 +21,25 @@ const stock = {
         const product = this.items.find(e => e.name === item.name);
         if (product) {
             product.quantity += item.quantity;
-            updProductToDOM(product);
+            updProductInDOM(product);
         } else {
             this.items.push(item);
             addProductToDOM(item);
+        }
+        this.updateTotalCost();
+    },
+    addQuantity(itemName, itemQuantity) {
+        if (itemQuantity <= 0 || !itemName.trim()) {
+            alert('Проверьте вводимую информацию про кол-во удаляемых товаров');
+            return;
+        }
+        const existItemIndex = this.items.findIndex((e) => itemName === e.name);
+        if (existItemIndex === -1) {
+            alert('Товара, нет на складе, либо вы вводите некорректное кол-во');
+            return;
+        } else {
+            this.items[existItemIndex].quantity += itemQuantity;
+            updProductInDOM(this.items[existItemIndex]);
         }
         this.updateTotalCost();
     },
@@ -44,9 +59,11 @@ const stock = {
             alert('Товара не достаточно на складе');
             return;
         } else if (itemQuantity < this.items[existItemIndex].quantity) {
-            this.items[existItemIndex].quantity -= item.quantity;
-        } else if (itemQuantity > this.items[existItemIndex].quantity) {
+            this.items[existItemIndex].quantity -= itemQuantity;
+            updProductInDOM(this.items[existItemIndex]);
+        } else if (itemQuantity >= this.items[existItemIndex].quantity) {
             this.items.splice(existItemIndex, 1);
+            delProductFromDom(itemName);
         }
 
         this.updateTotalCost();
@@ -110,12 +127,14 @@ statBtn.onclick = () => {
     // 5. Общая стоимость товаров
 
     //      B. Отобразить полученные статистические данные на странице
-    getStatElement('stat-1').textContent = 'Минимальная цена товара : ' + minPrice;
-    getStatElement('stat-2').textContent = 'Средняя цена товара : ' + avgPrice;
-    getStatElement('stat-3').textContent = 'Максимальная цена товара : ' + maxPrice;
-    getStatElement('stat-4').textContent = 'Общее кол-во позиций товара : ' + stock.items.length;
-    getStatElement('stat-5').textContent = 'Общая стоимость товара : ' + stock.totalCost;
-    getStatElement('stat-6').textContent = 'Общее кол-во товара : ' + allQuantity;
+    getStatElement('stat-1').innerHTML = 'Минимальная цена товара : <strong>' + minPrice+'</strong>';
+    getStatElement('stat-2').innerHTML = 'Средняя цена товара :  <strong>' + avgPrice+'</strong>';
+    getStatElement('stat-3').innerHTML = 'Максимальная цена товара :  <strong>' + maxPrice+'</strong>';
+    getStatElement('stat-4').innerHTML = 'Общее кол-во позиций товара :  <strong>' + stock.items.length+'</strong>';
+    getStatElement('stat-5').innerHTML = 'Общая стоимость товара :  <strong>' + stock.totalCost+'</strong>';
+    getStatElement('stat-6').innerHTML = 'Общее кол-во товара :  <strong>' + allQuantity+'</strong>';
+
+    document.getElementById("headerStat").style.display = 'block';
 }
 
 function addProductToDOM(item) {
@@ -125,13 +144,17 @@ function addProductToDOM(item) {
     showTheProduct(li, item);
     productsList.appendChild(li);
 }
-function updProductToDOM(item) {
+function updProductInDOM(item) {
     const li = document.getElementById('product-' + item.name);
+    li.innerHTML = '';
     showTheProduct(li, item);
 }
-function showTheProduct(li, item) {
-    // li.textContent = `${item.name} - ${item.price} (${item.quantity} шт.)`;
+function delProductFromDom(itemName) {
+    const li = document.getElementById(`product-${itemName}`);
+    li.remove();
+}
 
+function showTheProduct(li, item) {
     const divRow = document.createElement('div');
     divRow.classList.add('row');
     li.appendChild(divRow);
@@ -145,8 +168,22 @@ function showTheProduct(li, item) {
     divCol.textContent = item.price;
     divRow.appendChild(divCol);
     divCol = document.createElement('div');
-    divCol.classList.add('col-2');
+    divCol.classList.add('col-2','border-end');
     divCol.textContent = item.quantity;
+    divRow.appendChild(divCol);
+    divCol = document.createElement('span');
+    divCol.classList.add('col-4');
+    divCol.innerHTML = `
+    <button class="btn btn-primary me-2"
+        style="width: fit-content; margin: 0 auto;" 
+        onclick="stock.addQuantity('${item.name}',1)">+1</button>
+    <button class="btn btn-primary me-2" 
+        style="width: fit-content; margin: 0 auto;" 
+        onclick="stock.removeItem('${item.name}',1)">-1</button>
+    <button class="btn btn-danger" 
+        style="width: fit-content; margin: 0 auto;" 
+        onclick="stock.removeItem('${item.name}',${item.quantity})">Delete</button>
+    `;
     divRow.appendChild(divCol);
 }
 function getStatElement(id) {
@@ -169,26 +206,13 @@ function initPage() {
     if (!divElements) {
         return
     }
-    const div1 = divElements[0];
-    div1.classList.add('card', 'p-4', 'mb-4', 'shadow');
-    div1.style.backgroundColor = '#6ea088';
-    div1.style.color = 'white';
-
-    const labelElements = div1.getElementsByTagName('label');
-    for (let element of labelElements) {
-        element.classList.add('label-control');
-    }
-    const inputElements = div1.getElementsByTagName('input');
-    for (let element of inputElements) {
-        element.classList.add('form-control', 'mb-2');
-    }
 
     if (divElements.length > 1) {
         const div2 = divElements[1];
         div2.classList.add('d-flex', 'justify-content-center', 'pt-4');
     }
     addBtn.classList.add('btn', 'btn-warning', 'btn-custom');
-    statBtn.classList.add('btn', 'btn-secondary', 'btn-custom');
+    statBtn.classList.add('btn', 'btn-primary', 'btn-custom');
 
     productsList.classList.add('list-group', 'py-2', 'mb-3', 'border', 'shadow');
     productsList.style.backgroundColor = '#e1ddab';
@@ -214,7 +238,10 @@ function initPage() {
     divRow.appendChild(divCol);
     divCol = document.createElement('div');
     divCol.classList.add('col-2');
-    divCol.textContent = 'Количество, шт.';
+    divCol.textContent = 'Кол-во, шт.';
+    divRow.appendChild(divCol);
+    divCol = document.createElement('div');
+    divCol.classList.add('col-4');
     divRow.appendChild(divCol);
 
     stock.updateTotalCost();
