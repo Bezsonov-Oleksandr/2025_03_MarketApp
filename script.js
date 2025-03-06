@@ -141,8 +141,8 @@ function addProductToDOM(item) {
     const li = document.createElement('li');
     li.id = 'product-' + item.name;
     li.classList.add("list-group-item", "mb-1", "mx-3", "border", "text-center");   /* HW 17*/
-    showTheProduct(li, item);
     productsList.appendChild(li);
+    showTheProduct(li, item);
 }
 function updProductInDOM(item) {
     const li = document.getElementById('product-' + item.name);
@@ -176,15 +176,27 @@ function showTheProduct(li, item) {
     divCol.innerHTML = `
     <button class="btn btn-primary me-2"
         style="width: fit-content; margin: 0 auto;" 
-        onclick="stock.addQuantity('${item.name}',1)">+1</button>
+        onclick="stock.addQuantity('${item.name}',1)">
+        +1</button>
     <button class="btn btn-primary me-2" 
         style="width: fit-content; margin: 0 auto;" 
-        onclick="stock.removeItem('${item.name}',1)">-1</button>
+        onclick="stock.removeItem('${item.name}',1)">
+        -1</button>
     <button class="btn btn-danger" 
-        style="width: fit-content; margin: 0 auto;" 
-        onclick="stock.removeItem('${item.name}',${item.quantity})">Delete</button>
+        id="deleteBtn-${item.name}"
+        style="width: fit-content; margin: 0 auto;">
+        Delete</button>
     `;
     divRow.appendChild(divCol);
+
+    if (item.name) {
+        const deleteBtn = document.getElementById(`deleteBtn-${item.name}`);
+        deleteBtn.onclick = () => {
+            const actualQuantity = stock.items.find((e) => e.name === item.name).quantity;
+            stock.removeItem(item.name, actualQuantity);
+            li.remove();
+           }        
+    }
 }
 function getStatElement(id) {
     let li = document.getElementById(id);
@@ -248,3 +260,5 @@ function initPage() {
     stock.items.forEach(item => {
         addProductToDOM(item)
     });}
+
+    // test
