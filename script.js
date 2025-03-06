@@ -176,15 +176,19 @@ function showTheProduct(li, item) {
     divCol.innerHTML = `
     <button class="btn btn-primary me-2"
         style="width: fit-content; margin: 0 auto;" 
-        onclick="stock.addQuantity('${item.name}',1)">+1</button>
+        onclick="stock.addQuantity('${item.name}',1)">
+        +1</button>
     <button class="btn btn-primary me-2" 
         style="width: fit-content; margin: 0 auto;" 
-        onclick="stock.removeItem('${item.name}',1)">-1</button>
+        onclick="stock.removeItem('${item.name}',1)">
+        -1</button>
     <button class="btn btn-danger" 
-        style="width: fit-content; margin: 0 auto;" 
-        onclick="stock.removeItem('${item.name}',${item.quantity})">Delete</button>
+        id="deleteBtn-${item.name}"
+        style="width: fit-content; margin: 0 auto;">
+        Delete</button>
     `;
     divRow.appendChild(divCol);
+    
 }
 function getStatElement(id) {
     let li = document.getElementById(id);
