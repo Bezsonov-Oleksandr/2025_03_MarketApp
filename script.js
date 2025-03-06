@@ -260,3 +260,5 @@ function initPage() {
     stock.items.forEach(item => {
         addProductToDOM(item)
     });}
+
+    // test
